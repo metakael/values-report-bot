@@ -41,6 +41,8 @@ def verify_access_code(code):
     """
     try:
         logger.info(f"Attempting to verify access code: {code}")
+        
+        # Corrected query format
         response = supabase.table('access_codes').select('*').eq('code', code).execute()
         
         logger.info(f"Database response: {response}")
@@ -68,7 +70,7 @@ def verify_access_code(code):
         return False, None
     
     except Exception as e:
-        logger.error(f"Error verifying access code: {e}")
+        logger.error(f"Error verifying access code: {e}", exc_info=True)
         return False, None
 
 def store_user_data(user_id, user_data):
