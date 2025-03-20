@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Values Report</title>
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('../static/fonts/Poppins-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Poppins';
+            src: url('../static/fonts/Poppins-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Poppins';
+            src: url('../static/fonts/Poppins-Italic.ttf') format('truetype');
+            font-weight: normal;
+            font-style: italic;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333333;
+            font-size: 12pt;
+            line-height: 1.5;
+        }
+        
+        .page {
+            padding: 40px;
+            position: relative;
+            page-break-after: always;
+        }
+        
+        .page:last-child {
+            page-break-after: avoid;
+        }
+        
+        .header {
+            position: running(header);
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .footer {
+            position: running(footer);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid #e0e0e0;
+            font-size: 10pt;
+            color: #666666;
+        }
+        
+        .logo {
+            max-height: 60px;
+        }
+        
+        h1 {
+            font-size: 28pt;
+            margin-bottom: 20px;
+            color: #333333;
+        }
+        
+        h2 {
+            font-size: 18pt;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #333333;
+        }
+        
+        h3 {
+            font-size: 14pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #333333;
+        }
+        
+        .cover {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .user-info {
+            margin-top: 40px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        
+        .values-list {
+            margin-bottom: 30px;
+        }
+        
+        .value-item {
+            margin-bottom: 10px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        @page {
+            size: A4;
+            margin: 100px 0 80px 0;
+            @top-center {
+                content: element(header);
+            }
+            @bottom-center {
+                content: element(footer);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <img src="../static/images/logo.png" alt="Logo" class="logo">
+        <div>Personal Values Report</div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+        <div>Personal Values Report</div>
+        <div>{{ generation_date }}</div>
+        <div>Page <span class="page-number"></span></div>
+    </div>
+    
+    <!-- Cover Page -->
+    <div class="page cover">
+        <h1>Personal Values Report</h1>
+        <p>Generated on: {{ generation_date }}</p>
+        
+        <div class="user-info">
+            <h3>Personal Information</h3>
+            <p><strong>Age:</strong> {{ age }}</p>
+            <p><strong>Country:</strong> {{ country }}</p>
+            <p><strong>Occupation:</strong> {{ occupation }}</p>
+            
+            <h3>Your Top Values</h3>
+            <div class="values-list">
+                <h4>Top 5 Values (Ranked)</h4>
+                <ol>
+                    {% for value in top_values %}
+                    <li class="value-item">{{ value }}</li>
+                    {% endfor %}
+                </ol>
+                
+                <h4>Values 6-10</h4>
+                <ul>
+                    {% for value in next_values %}
+                    <li class="value-item">{{ value }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        <p>This report provides insights into your personal values based on the research of Shalom Schwartz. It explores what your values mean for you, how they influence your decisions, and how they affect your relationships.</p>
+    </div>
+    
+    <!-- Content Pages -->
+    {% for section in sections %}
+    <div class="page section">
+        <h2>{{ section.title }}</h2>
+        {{ section.content }}
+    </div>
+    {% endfor %}
+    
+    <!-- References Page -->
+    <div class="page">
+        <h2>References</h2>
+        <p>Schwartz, S. H. (1992). Universals in the content and structure of values: Theoretical advances and empirical tests in 20 countries. Advances in Experimental Social Psychology, 25, 1-65.</p>
+        <p>Schwartz, S. H. (2012). An Overview of the Schwartz Theory of Basic Values. Online Readings in Psychology and Culture, 2(1).</p>
+        <p>Gouveia, V. V., Milfont, T. L., & Guerra, V. M. (2014). Functional theory of human values: Testing its content and structure hypotheses. Personality and Individual Differences, 60, 41-47.</p>
+    </div>
+</body>
+</html>
