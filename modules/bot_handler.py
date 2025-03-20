@@ -34,9 +34,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['telegram_username'] = update.effective_user.username
     
     await update.message.reply_text(
-        "Welcome to the Personal Values Report Bot! 🌟\n\n"
-        "I'll help you create a personalized values report based on your inputs.\n\n"
-        "Please enter your access code to begin:"
+        "Welcome to your Personal Values Report Generator! 🌟\n\n"
+        "Thanks for taking part in the Knowing My Values exercise. We've set up a bot to help you generate a personalised report based on your top 10 values.\n\n"
+        "Please enter your access code to begin. If you don't have one, please contact the administrator."
     )
     
     return ACCESS_CODE
@@ -289,7 +289,7 @@ async def confirm_inputs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     # Inform user that report generation is starting
     await query.edit_message_text(
         "📊 Thank you for confirming your information!\n\n"
-        "I'm now generating your personalized values report. This may take a minute or two...\n\n"
+        "I'm now generating your personalised values report. This may take a minute or two...\n\n"
         "Please wait while I process your data and create your PDF report."
     )
     
@@ -347,7 +347,7 @@ async def generate_report(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         # Message indicating report is ready
         if update.callback_query:
             await update.callback_query.edit_message_text(
-                "✅ Your personalized values report is ready!\n\n"
+                "✅ Your Values report is ready!\n\n"
                 "Here's what's included in your report:\n"
                 "- What does this mean for me?\n"
                 "- Are my values in parallel or in tension?\n"
@@ -357,7 +357,7 @@ async def generate_report(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
             )
         else:
             await update.message.reply_text(
-                "✅ Your personalized values report is ready!\n\n"
+                "✅ Your Values report is ready!\n\n"
                 "Here's what's included in your report:\n"
                 "- What does this mean for me?\n"
                 "- Are my values in parallel or in tension?\n"
@@ -372,7 +372,7 @@ async def generate_report(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
                 chat_id=user_id,
                 document=file,
                 filename=f"Values_Report_{user_id}.pdf",
-                caption="Here is your personalized values report!"
+                caption="Here is your personalised Values report!"
             )
         
         # Cleanup the temporary PDF file
