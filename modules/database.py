@@ -31,45 +31,65 @@ def init_db():
 def verify_access_code(code):
     """
     Verify if an access code is valid and has remaining uses
-    
-    Args:
-        code (str): Access code provided by the user
-        
-    Returns:
-        bool: True if valid code with remaining uses, False otherwise
-        int: Remaining uses after this use (None if invalid)
     """
     try:
         logger.info(f"Attempting to verify access code: {code}")
         
-        # For testing purposes, accept TEST123 and DEMO456
-        if code == "TEST123" or code == "DEMO456":
-            logger.info(f"Using test code: {code}")
-            return True, 10  # Allow 10 uses
-            
-        # Try to get all access codes for debugging
-        response = supabase.table('access_codes').select('*').execute()
-        logger.info(f"All access codes: {response.data}")
+        # Development override for testing
+        if code in ["TEST123", "DEMO456"]:
+            logger.info(f"Using development override for {code}")
+            return True, 10
         
-        # Look for matching code
-        for item in response.data:
-            if item.get('code') == code:
-                remaining_uses = item.get('remaining_uses', 0)
+        # Test connection and permissions with a basic query
+        try:
+            logger.info("Testing basic database access...")
+            test_response = supabase.from_('access_codes').select('*').limit(5).execute()
+            logger.info(f"Basic access test response: {test_response}")
+        except Exception as conn_err:
+            logger.error(f"Basic database access failed: {conn_err}")
+        
+        # Try alternative query format
+        try:
+            logger.info(f"Trying alternative query format for code: {code}")
+            alt_response = supabase.from_('access_codes').select('*').filter('code', 'eq', code).execute()
+            logger.info(f"Alternative query response: {alt_response}")
+            
+            if alt_response.data and len(alt_response.data) > 0:
+                code_data = alt_response.data[0]
+                remaining_uses = code_data.get('remaining_uses', 0)
+                
                 if remaining_uses > 0:
-                    # Update remaining uses
-                    update_response = supabase.table('access_codes').update(
-                        {'remaining_uses': remaining_uses - 1}
-                    ).eq('id', item.get('id')).execute()
+                    update_response = supabase.from_('access_codes').update({
+                        'remaining_uses': remaining_uses - 1
+                    }).eq('id', code_data.get('id')).execute()
                     
                     return True, remaining_uses - 1
+        except Exception as alt_err:
+            logger.error(f"Alternative query failed: {alt_err}")
+        
+        # Original query as fallback
+        response = supabase.table('access_codes').select('*').eq('code', code).execute()
+        logger.info(f"Original query response: {response}")
+        
+        if response.data and len(response.data) > 0:
+            code_data = response.data[0]
+            remaining_uses = code_data.get('remaining_uses', 0)
+            
+            if remaining_uses > 0:
+                update_response = supabase.table('access_codes').update({
+                    'remaining_uses': remaining_uses - 1
+                }).eq('code', code).execute()
                 
+                return True, remaining_uses - 1
+        
         return False, None
     
     except Exception as e:
         logger.error(f"Error verifying access code: {e}")
-        # Default to accepting the code during testing
-        logger.info("Falling back to test mode due to error")
-        return True, 10  # Allow 10 uses for any code during testing
+        # Fallback for testing
+        if code in ["TEST123", "DEMO456"]:
+            return True, 10
+        return False, None
 
 def store_user_data(user_id, user_data):
     """
