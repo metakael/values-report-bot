@@ -2,8 +2,8 @@
 python-telegram-bot==13.15  # Using an older but stable version
 
 # Database and API
-supabase==2.3.1
-postgrest==0.13.0
+supabase==1.2.0
+postgrest==0.11.0
 
 # Environment Variables
 python-dotenv==1.0.0

@@ -12,6 +12,9 @@ from config import Config
 logger = logging.getLogger(__name__)
 
 # Initialize Supabase client
+import os
+os.environ["SUPABASE_URL"] = Config.SUPABASE_URL
+os.environ["SUPABASE_KEY"] = Config.SUPABASE_KEY
 supabase = create_client(Config.SUPABASE_URL, Config.SUPABASE_KEY)
 
 def init_db():
