@@ -29,43 +29,35 @@ def init_db():
         return False
 
 def verify_access_code(code):
-    """
-    Verify if an access code is valid and has remaining uses
-    
-    Args:
-        code (str): Access code provided by the user
-        
-    Returns:
-        bool: True if valid code with remaining uses, False otherwise
-        int: Remaining uses after this use (None if invalid)
-    """
     try:
         logger.info(f"Attempting to verify access code: {code}")
         
-        # Corrected query format
-        response = supabase.table('access_codes').select('*').eq('code', code).execute()
+        # Try with explicit query to troubleshoot
+        query = f"select * from access_codes where code = '{code}'"
+        response = supabase.rpc('select_access_code', {'query_text': query}).execute()
         
-        logger.info(f"Database response: {response}")
+        logger.info(f"Explicit query response: {response}")
         
-        # Check if code exists and has remaining uses
-        if response.data and len(response.data) > 0:
-            code_data = response.data[0]
-            remaining_uses = code_data.get('remaining_uses', 0)
-            logger.info(f"Found code with remaining uses: {remaining_uses}")
+        # Fall back to simpler query if needed
+        if not response.data or len(response.data) == 0:
+            logger.info("RPC failed, trying direct table query")
+            response = supabase.table('access_codes').select('*').execute()
+            logger.info(f"All access codes response: {response}")
             
-            if remaining_uses > 0:
-                # Decrement remaining uses
-                logger.info(f"Decrementing remaining uses for code: {code}")
-                update_response = supabase.table('access_codes').update(
-                    {'remaining_uses': remaining_uses - 1}
-                ).eq('code', code).execute()
+            # Manually filter for the code
+            matching_codes = [item for item in response.data if item.get('code') == code]
+            if matching_codes:
+                code_data = matching_codes[0]
+                remaining_uses = code_data.get('remaining_uses', 0)
+                logger.info(f"Found code with remaining uses: {remaining_uses}")
                 
-                logger.info(f"Update response: {update_response}")
-                return True, remaining_uses - 1
-            else:
-                logger.info(f"Code found but has no remaining uses: {code}")
-        else:
-            logger.info(f"Code not found: {code}")
+                if remaining_uses > 0:
+                    update_response = supabase.table('access_codes').update(
+                        {'remaining_uses': remaining_uses - 1}
+                    ).eq('id', code_data.get('id')).execute()
+                    
+                    logger.info(f"Update response: {update_response}")
+                    return True, remaining_uses - 1
         
         return False, None
     
