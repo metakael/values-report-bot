@@ -40,20 +40,30 @@ def verify_access_code(code):
         int: Remaining uses after this use (None if invalid)
     """
     try:
+        logger.info(f"Attempting to verify access code: {code}")
         response = supabase.table('access_codes').select('*').eq('code', code).execute()
+        
+        logger.info(f"Database response: {response}")
         
         # Check if code exists and has remaining uses
         if response.data and len(response.data) > 0:
             code_data = response.data[0]
             remaining_uses = code_data.get('remaining_uses', 0)
+            logger.info(f"Found code with remaining uses: {remaining_uses}")
             
             if remaining_uses > 0:
                 # Decrement remaining uses
-                supabase.table('access_codes').update(
+                logger.info(f"Decrementing remaining uses for code: {code}")
+                update_response = supabase.table('access_codes').update(
                     {'remaining_uses': remaining_uses - 1}
                 ).eq('code', code).execute()
                 
+                logger.info(f"Update response: {update_response}")
                 return True, remaining_uses - 1
+            else:
+                logger.info(f"Code found but has no remaining uses: {code}")
+        else:
+            logger.info(f"Code not found: {code}")
         
         return False, None
     
