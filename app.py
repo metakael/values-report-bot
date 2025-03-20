@@ -8,7 +8,7 @@ Main application entry point
 
 import os
 import logging
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ConversationHandler, CallbackQueryHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 from modules.bot_handler import (
     start, handle_access_code, 
     collect_top_five_values, collect_next_five_values, 
@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 def main():
     """Start the bot."""
     # Create the Application
-    application = Application.builder().token(Config.TELEGRAM_TOKEN).build()
+    application = Updater(Config.TELEGRAM_TOKEN).dispatcher
 
     # Initialize database
     init_db()
@@ -44,12 +44,12 @@ def main():
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start)],
         states={
-            ACCESS_CODE: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_access_code)],
-            TOP_FIVE_VALUES: [MessageHandler(filters.TEXT & ~filters.COMMAND, collect_top_five_values)],
-            NEXT_FIVE_VALUES: [MessageHandler(filters.TEXT & ~filters.COMMAND, collect_next_five_values)],
-            AGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, collect_age)],
-            COUNTRY: [MessageHandler(filters.TEXT & ~filters.COMMAND, collect_country)],
-            OCCUPATION: [MessageHandler(filters.TEXT & ~filters.COMMAND, collect_occupation)],
+            ACCESS_CODE: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, handle_access_code)],
+            TOP_FIVE_VALUES: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, collect_top_five_values)],
+            NEXT_FIVE_VALUES: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, collect_next_five_values)],
+            AGE: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, collect_age)],
+            COUNTRY: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, collect_country)],
+            OCCUPATION: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, collect_occupation)],
             REVIEW: [
                 CallbackQueryHandler(collect_top_five_values, pattern='^edit_top_five$'),
                 CallbackQueryHandler(collect_next_five_values, pattern='^edit_next_five$'),
@@ -58,7 +58,7 @@ def main():
                 CallbackQueryHandler(collect_occupation, pattern='^edit_occupation$'),
                 CallbackQueryHandler(confirm_inputs, pattern='^confirm$')
             ],
-            GENERATING_REPORT: [MessageHandler(filters.TEXT & ~filters.COMMAND, generate_report)],
+            GENERATING_REPORT: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, generate_report)],
         },
         fallbacks=[CommandHandler("cancel", cancel)],
         name="values_report_conversation",
@@ -70,16 +70,18 @@ def main():
 
     # Start the Bot
     if Config.WEBHOOK_URL:
-        # Set up webhook
-        application.run_webhook(
+        updater = application._dispatcher.updater
+        updater.start_webhook(
             listen="0.0.0.0",
             port=int(os.environ.get("PORT", 5000)),
             url_path=Config.TELEGRAM_TOKEN,
             webhook_url=f"{Config.WEBHOOK_URL}/{Config.TELEGRAM_TOKEN}"
         )
+        updater.idle()
     else:
-        # Start polling
-        application.run_polling()
+        updater = application._dispatcher.updater
+        updater.start_polling()
+        updater.idle()
 
 if __name__ == '__main__':
     main()
