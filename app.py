@@ -35,7 +35,24 @@ logger = logging.getLogger(__name__)
 def main():
     """Start the bot."""
     # Create the Application
-    application = Updater(Config.TELEGRAM_TOKEN).dispatcher
+    updater = Updater(Config.TELEGRAM_TOKEN)
+    application = updater.dispatcher
+
+    # Add the conversation handler to the application
+    application.add_handler(conv_handler)
+
+    # Start the Bot
+    if Config.WEBHOOK_URL:
+        updater.start_webhook(
+            listen="0.0.0.0",
+            port=int(os.environ.get("PORT", 5000)),
+            url_path=Config.TELEGRAM_TOKEN,
+            webhook_url=f"{Config.WEBHOOK_URL}/{Config.TELEGRAM_TOKEN}"
+        )
+        updater.idle()
+    else:
+        updater.start_polling()
+        updater.idle()
 
     # Initialize database
     init_db()
@@ -65,23 +82,6 @@ def main():
         persistent=False,
     )
 
-    # Add the conversation handler to the application
-    application.add_handler(conv_handler)
-
-    # Start the Bot
-    if Config.WEBHOOK_URL:
-        updater = application._dispatcher.updater
-        updater.start_webhook(
-            listen="0.0.0.0",
-            port=int(os.environ.get("PORT", 5000)),
-            url_path=Config.TELEGRAM_TOKEN,
-            webhook_url=f"{Config.WEBHOOK_URL}/{Config.TELEGRAM_TOKEN}"
-        )
-        updater.idle()
-    else:
-        updater = application._dispatcher.updater
-        updater.start_polling()
-        updater.idle()
 
 if __name__ == '__main__':
     main()
