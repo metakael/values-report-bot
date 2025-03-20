@@ -8,13 +8,13 @@ A Telegram bot that creates personalized values reports based on user inputs. Th
 - **Data Collection**: Collects values (top 5 ranked, next 5 unranked) and personal information
 - **Content Generation**: Generates personalized content using Google Gemini API
 - **PDF Generation**: Creates professional PDF reports with consistent formatting
-- **Secure Storage**: Stores user data in Supabase for future reference and analysis
+- **Secure Storage**: Stores user data in Firebase for future reference and analysis
 
 ## Technology Stack
 
 - **Language**: Python
 - **Bot Framework**: python-telegram-bot
-- **Database**: Supabase (PostgreSQL)
+- **Database**: Firebase Firestore
 - **LLM API**: Google Gemini
 - **PDF Generation**: WeasyPrint with Jinja2 templates
 - **Deployment**: Render
@@ -25,12 +25,13 @@ A Telegram bot that creates personalized values reports based on user inputs. Th
 values_report_bot/
 ├── app.py                 # Main application entry point
 ├── config.py              # Configuration and environment variables
+├── firebase_setup.py      # Firebase initialization script
 ├── requirements.txt       # Project dependencies
 ├── .env                   # Environment variables (not tracked in git)
 ├── .env.template          # Template for environment variables
 ├── modules/
 │   ├── bot_handler.py     # Telegram bot conversation handlers
-│   ├── database.py        # Supabase integration and database operations
+│   ├── database.py        # Firebase integration and database operations
 │   ├── llm_integration.py # Google Gemini API integration
 │   ├── pdf_generator.py   # WeasyPrint PDF generation
 │   └── utils.py           # Utility functions
@@ -48,9 +49,26 @@ values_report_bot/
 
 - Python 3.8 or higher
 - Telegram Bot token (from BotFather)
-- Supabase account and project
+- Firebase project with Firestore database
 - Google Gemini API key
 - Render account (for deployment)
+
+### Firebase Setup
+
+1. Create a Firebase project:
+   - Go to the [Firebase Console](https://console.firebase.google.com/)
+   - Click "Add project" and follow the setup wizard
+   - Enable Firestore Database from the left sidebar
+
+2. Generate service account credentials:
+   - In your Firebase project, go to Project Settings > Service accounts
+   - Click "Generate new private key"
+   - Save the JSON file securely
+
+3. Initialize Firebase collections:
+   - Place your service account JSON file in a secure location
+   - Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to the path of this file
+   - Run the setup script: `python firebase_setup.py`
 
 ### Local Development Setup
 
@@ -85,45 +103,7 @@ values_report_bot/
    - Add your logo to `static/images/logo.png`
    - Add Poppins font files to `static/fonts/`
 
-6. Set up Supabase database:
-
-   Create the following tables in your Supabase project:
-
-   **access_codes**
-   - `id` (uuid, primary key)
-   - `code` (text, unique)
-   - `remaining_uses` (integer)
-   - `created_at` (timestamp with time zone)
-
-   **users**
-   - `id` (uuid, primary key)
-   - `telegram_id` (bigint, unique)
-   - `telegram_username` (text, nullable)
-   - `access_code` (text)
-   - `top_values` (text array)
-   - `next_values` (text array)
-   - `schwartz_categories` (text array)
-   - `age` (integer)
-   - `country` (text)
-   - `occupation` (text)
-   - `created_at` (timestamp with time zone)
-   - `updated_at` (timestamp with time zone)
-
-   **values**
-   - `id` (uuid, primary key)
-   - `value` (text, unique)
-   - `description` (text)
-   - `schwartz_category` (text)
-   - `gouveia_category` (text)
-
-   **reports**
-   - `id` (uuid, primary key)
-   - `telegram_id` (bigint, references users.telegram_id)
-   - `sections_content` (jsonb)
-   - `prompts_used` (jsonb)
-   - `generation_date` (timestamp with time zone)
-
-7. Run the bot locally:
+6. Run the bot locally:
    ```bash
    python app.py
    ```
@@ -135,11 +115,13 @@ values_report_bot/
 2. Configure the service:
    - **Build Command**: `pip install -r requirements.txt`
    - **Start Command**: `python app.py`
-   - **Environment Variables**: Add all variables from your `.env` file.
+   - **Environment Variables**: Add all variables from your `.env` file, including:
+     - `TELEGRAM_TOKEN`
+     - `FIREBASE_CREDENTIALS_JSON` (copy the entire content of your service account JSON file)
+     - `GEMINI_API_KEY`
+     - `WEBHOOK_URL` (set to your Render deployment URL)
 
-3. Set the `WEBHOOK_URL` environment variable to your Render deployment URL.
-
-4. Deploy the service.
+3. Deploy the service.
 
 ## Bot Usage Flow
 
@@ -154,7 +136,11 @@ values_report_bot/
 
 ## Maintenance and Support
 
-To add or update access codes, you can directly modify the `access_codes` table in your Supabase database. Each code has a predefined number of remaining uses.
+To add or update access codes, you can either:
+
+1. Use the Firebase Console to directly add documents to the `access_codes` collection
+2. Run the `firebase_setup.py` script with updated code information
+3. Use the `add_access_code()` function from the database module
 
 ## License
 

@@ -20,9 +20,8 @@ class Config:
     # Webhook settings (for production)
     WEBHOOK_URL = os.getenv("WEBHOOK_URL", None)
     
-    # Supabase configuration
-    SUPABASE_URL = os.getenv("SUPABASE_URL")
-    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+    # Firebase configuration (replacing Supabase)
+    FIREBASE_CREDENTIALS_JSON = os.getenv("FIREBASE_CREDENTIALS_JSON")
     
     # Google Gemini API
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
