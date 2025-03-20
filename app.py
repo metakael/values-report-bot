@@ -44,12 +44,12 @@ def main():
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start)],
         states={
-            ACCESS_CODE: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, handle_access_code)],
-            TOP_FIVE_VALUES: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, collect_top_five_values)],
-            NEXT_FIVE_VALUES: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, collect_next_five_values)],
-            AGE: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, collect_age)],
-            COUNTRY: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, collect_country)],
-            OCCUPATION: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, collect_occupation)],
+            ACCESS_CODE: [MessageHandler(Filters.text & ~Filters.command, handle_access_code)],
+            TOP_FIVE_VALUES: [MessageHandler(Filters.text & ~Filters.command, collect_top_five_values)],
+            NEXT_FIVE_VALUES: [MessageHandler(Filters.text & ~Filters.command, collect_next_five_values)],
+            AGE: [MessageHandler(Filters.text & ~Filters.command, collect_age)],
+            COUNTRY: [MessageHandler(Filters.text & ~Filters.command, collect_country)],
+            OCCUPATION: [MessageHandler(Filters.text & ~Filters.command, collect_occupation)],
             REVIEW: [
                 CallbackQueryHandler(collect_top_five_values, pattern='^edit_top_five$'),
                 CallbackQueryHandler(collect_next_five_values, pattern='^edit_next_five$'),
@@ -58,7 +58,7 @@ def main():
                 CallbackQueryHandler(collect_occupation, pattern='^edit_occupation$'),
                 CallbackQueryHandler(confirm_inputs, pattern='^confirm$')
             ],
-            GENERATING_REPORT: [MessageHandler(Filters.TEXT & ~Filters.COMMAND, generate_report)],
+            GENERATING_REPORT: [MessageHandler(Filters.text & ~Filters.command, generate_report)],
         },
         fallbacks=[CommandHandler("cancel", cancel)],
         name="values_report_conversation",
