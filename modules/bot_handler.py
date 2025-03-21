@@ -317,7 +317,10 @@ def generate_report(update: Update, context) -> int:
         user_data = context.user_data
         
         # Generate content for all sections
-        sections_content, prompts_used = generate_all_sections(user_data)
+        import asyncio
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        sections_content, prompts_used = loop.run_until_complete(generate_all_sections(user_data))
         
         # Store report data
         report_data = {
