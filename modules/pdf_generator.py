@@ -68,7 +68,17 @@ def generate_pdf(user_data, sections_content):
         # Generate PDF (fix the constructor call)
         html = HTML(string=html_content, base_url=f"file://{base_dir}")
         css = CSS(filename=css_file)
-        html.write_pdf(pdf_path, stylesheets=[css])
+
+        # Create PDF document
+        try:
+            # Try with current WeasyPrint version
+            pdf_bytes = html.write_pdf(stylesheets=[css])
+            with open(pdf_path, 'wb') as pdf_file:
+                pdf_file.write(pdf_bytes)
+        except TypeError as e:
+            # Fallback for different WeasyPrint versions
+            logger.warning(f"Adjusting for WeasyPrint version: {e}")
+            html.write_pdf(target=pdf_path, stylesheets=[css])
         
         return True, pdf_path
     
