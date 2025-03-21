@@ -24,9 +24,12 @@ def generate_pdf(user_data, sections_content):
     try:
         # Calculate absolute paths
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        fonts_dir = os.path.join(base_dir, 'static', 'fonts')
-        images_dir = os.path.join(base_dir, 'static', 'images')
-        css_dir = os.path.join(base_dir, 'static', 'css')
+        static_dir = os.path.join(base_dir, 'static')
+        
+        # Create file URLs for resources
+        fonts_dir = f"file://{os.path.join(static_dir, 'fonts')}"
+        logo_path = f"file://{os.path.join(static_dir, 'images', 'logo.png')}"
+        css_file = os.path.join(static_dir, 'css', 'style.css')
         
         # Prepare template data
         template_data = {
@@ -39,7 +42,7 @@ def generate_pdf(user_data, sections_content):
             'occupation': user_data.get('occupation', 'Not specified'),
             'sections': [],
             'fonts_dir': fonts_dir,
-            'logo_path': os.path.join(images_dir, 'logo.png')
+            'logo_path': logo_path
         }
         
         # Format sections
@@ -58,21 +61,19 @@ def generate_pdf(user_data, sections_content):
         # Render template
         html_content = template.render(**template_data)
         
-        # Define CSS
-        css_file = os.path.join(css_dir, 'style.css')
-        
         # Create temporary file for PDF
         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
             pdf_path = tmp.name
         
-        # Generate PDF
-        html = HTML(string=html_content)
-        html.write_pdf(pdf_path, stylesheets=[CSS(css_file)])
+        # Generate PDF (fix the constructor call)
+        html = HTML(string=html_content, base_url=f"file://{base_dir}")
+        css = CSS(filename=css_file)
+        html.write_pdf(pdf_path, stylesheets=[css])
         
         return True, pdf_path
     
     except Exception as e:
-        logger.error(f"Error generating PDF: {e}")
+        logger.error(f"Error generating PDF: {e}", exc_info=True)
         return False, f"Error generating PDF: {str(e)}"
 
 def cleanup_pdf(pdf_path):

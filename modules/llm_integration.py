@@ -17,9 +17,11 @@ genai.configure(api_key=Config.GEMINI_API_KEY)
 def initialize_model():
     """Initialize and return the Gemini model"""
     try:
-        # Update to use the correct model name and configuration
+        # Configure with the API key
         genai.configure(api_key=Config.GEMINI_API_KEY)
-        model = genai.GenerativeModel('gemini-1.0-pro')  # Updated model name
+        
+        # Use the correct model name - "gemini-pro"
+        model = genai.GenerativeModel('gemini-pro')
         return model
     except Exception as e:
         logger.error(f"Error initializing Gemini model: {e}")
