@@ -7,21 +7,21 @@
     <style>
         @font-face {
             font-family: 'Poppins';
-            src: url('../static/fonts/Poppins-Regular.ttf') format('truetype');
+            src: url('{{ fonts_dir }}/Poppins-Regular.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
-        
-        @font-face {
+    
+    @font-face {
             font-family: 'Poppins';
-            src: url('../static/fonts/Poppins-Bold.ttf') format('truetype');
+            src: url('{{ fonts_dir }}/Poppins-Bold.ttf') format('truetype');
             font-weight: bold;
             font-style: normal;
         }
-        
-        @font-face {
+    
+    @font-face {
             font-family: 'Poppins';
-            src: url('../static/fonts/Poppins-Italic.ttf') format('truetype');
+            src: url('{{ fonts_dir }}/Poppins-Italic.ttf') format('truetype');
             font-weight: normal;
             font-style: italic;
         }
@@ -132,7 +132,7 @@
 <body>
     <!-- Header -->
     <div class="header">
-        <img src="../static/images/logo.png" alt="Logo" class="logo">
+        <img src="{{ logo_path }}" alt="Logo" class="logo">
         <div>Personal Values Report</div>
     </div>
     

@@ -20,19 +20,14 @@ template_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templat
 env = Environment(loader=FileSystemLoader(template_dir))
 
 def generate_pdf(user_data, sections_content):
-    """
-    Generate a PDF report based on user data and section content
-    
-    Args:
-        user_data (dict): User's values and personal information
-        sections_content (dict): Content for each section of the report
-        
-    Returns:
-        tuple: (success, pdf_path or error_message)
-            - success (bool): True if PDF generation was successful
-            - pdf_path (str) or error_message (str): Path to the generated PDF or error message
-    """
+    """Generate a PDF report based on user data and section content"""
     try:
+        # Calculate absolute paths
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        fonts_dir = os.path.join(base_dir, 'static', 'fonts')
+        images_dir = os.path.join(base_dir, 'static', 'images')
+        css_dir = os.path.join(base_dir, 'static', 'css')
+        
         # Prepare template data
         template_data = {
             'user_name': user_data.get('telegram_username', 'User'),
@@ -42,7 +37,9 @@ def generate_pdf(user_data, sections_content):
             'age': user_data.get('age', 'Not specified'),
             'country': user_data.get('country', 'Not specified'),
             'occupation': user_data.get('occupation', 'Not specified'),
-            'sections': []
+            'sections': [],
+            'fonts_dir': fonts_dir,
+            'logo_path': os.path.join(images_dir, 'logo.png')
         }
         
         # Format sections
@@ -62,17 +59,15 @@ def generate_pdf(user_data, sections_content):
         html_content = template.render(**template_data)
         
         # Define CSS
-        css_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static/css/style.css')
+        css_file = os.path.join(css_dir, 'style.css')
         
         # Create temporary file for PDF
         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
             pdf_path = tmp.name
         
         # Generate PDF
-        HTML(string=html_content).write_pdf(
-            pdf_path,
-            stylesheets=[CSS(css_file)]
-        )
+        html = HTML(string=html_content)
+        html.write_pdf(pdf_path, stylesheets=[CSS(css_file)])
         
         return True, pdf_path
     

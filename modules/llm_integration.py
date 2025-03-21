@@ -17,8 +17,9 @@ genai.configure(api_key=Config.GEMINI_API_KEY)
 def initialize_model():
     """Initialize and return the Gemini model"""
     try:
-        # Using Gemini Pro for text generation
-        model = genai.GenerativeModel('gemini-pro')
+        # Update to use the correct model name and configuration
+        genai.configure(api_key=Config.GEMINI_API_KEY)
+        model = genai.GenerativeModel('gemini-1.0-pro')  # Updated model name
         return model
     except Exception as e:
         logger.error(f"Error initializing Gemini model: {e}")
