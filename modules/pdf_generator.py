@@ -9,6 +9,7 @@ import os
 import logging
 from datetime import datetime
 import tempfile
+import subprocess
 from jinja2 import Environment, FileSystemLoader
 from weasyprint import HTML, CSS
 from config import Config
@@ -20,16 +21,20 @@ template_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templat
 env = Environment(loader=FileSystemLoader(template_dir))
 
 def generate_pdf(user_data, sections_content):
-    """Generate a PDF report based on user data and section content"""
+    """
+    Generate a PDF report based on user data and section content
+    
+    Args:
+        user_data (dict): User's values and personal information
+        sections_content (dict): Content for each section of the report
+        
+    Returns:
+        tuple: (success, pdf_path or error_message)
+    """
     try:
         # Calculate absolute paths
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         static_dir = os.path.join(base_dir, 'static')
-        
-        # Create file URLs for resources
-        fonts_dir = f"file://{os.path.join(static_dir, 'fonts')}"
-        logo_path = f"file://{os.path.join(static_dir, 'images', 'logo.png')}"
-        css_file = os.path.join(static_dir, 'css', 'style.css')
         
         # Prepare template data
         template_data = {
@@ -40,9 +45,7 @@ def generate_pdf(user_data, sections_content):
             'age': user_data.get('age', 'Not specified'),
             'country': user_data.get('country', 'Not specified'),
             'occupation': user_data.get('occupation', 'Not specified'),
-            'sections': [],
-            'fonts_dir': fonts_dir,
-            'logo_path': logo_path
+            'sections': []
         }
         
         # Format sections
@@ -61,24 +64,23 @@ def generate_pdf(user_data, sections_content):
         # Render template
         html_content = template.render(**template_data)
         
-        # Create temporary file for PDF
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
-            pdf_path = tmp.name
+        # Create temporary files for HTML and PDF
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as html_tmp:
+            html_path = html_tmp.name
+            html_tmp.write(html_content.encode('utf-8'))
         
-        # Generate PDF (fix the constructor call)
-        html = HTML(string=html_content, base_url=f"file://{base_dir}")
-        css = CSS(filename=css_file)
-
-        # Create PDF document
-        try:
-            # Try with current WeasyPrint version
-            pdf_bytes = html.write_pdf(stylesheets=[css])
-            with open(pdf_path, 'wb') as pdf_file:
-                pdf_file.write(pdf_bytes)
-        except TypeError as e:
-            # Fallback for different WeasyPrint versions
-            logger.warning(f"Adjusting for WeasyPrint version: {e}")
-            html.write_pdf(target=pdf_path, stylesheets=[css])
+        pdf_path = html_path.replace('.html', '.pdf')
+        
+        # Generate PDF using WeasyPrint command-line interface
+        css_path = os.path.join(static_dir, 'css', 'style.css')
+        
+        # Use a simplified approach with just the essential parameters
+        html = HTML(filename=html_path)
+        html.write_pdf(pdf_path)
+        
+        # Clean up the temporary HTML file
+        if os.path.exists(html_path):
+            os.unlink(html_path)
         
         return True, pdf_path
     
