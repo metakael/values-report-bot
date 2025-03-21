@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 
 """
-PDF Generator module using WeasyPrint and Jinja2 templates
+PDF Generator module using pdfkit and Jinja2 templates
 """
 
 import os
 import logging
+import platform
 from datetime import datetime
 import tempfile
-import subprocess
+import pdfkit
 from jinja2 import Environment, FileSystemLoader
-from weasyprint import HTML, CSS
 from config import Config
 
 logger = logging.getLogger(__name__)
@@ -19,6 +19,14 @@ logger = logging.getLogger(__name__)
 # Initialize Jinja2 environment
 template_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates')
 env = Environment(loader=FileSystemLoader(template_dir))
+
+# Determine the path to wkhtmltopdf based on the environment
+if platform.system() == 'Darwin':  # macOS
+    WKHTMLTOPDF_PATH = '/usr/local/bin/wkhtmltopdf'
+elif platform.system() == 'Windows':  # Windows
+    WKHTMLTOPDF_PATH = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+else:  # Linux (Render)
+    WKHTMLTOPDF_PATH = '/usr/bin/wkhtmltopdf'
 
 def generate_pdf(user_data, sections_content):
     """
@@ -32,10 +40,6 @@ def generate_pdf(user_data, sections_content):
         tuple: (success, pdf_path or error_message)
     """
     try:
-        # Calculate absolute paths
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        static_dir = os.path.join(base_dir, 'static')
-        
         # Prepare template data
         template_data = {
             'user_name': user_data.get('telegram_username', 'User'),
@@ -64,23 +68,36 @@ def generate_pdf(user_data, sections_content):
         # Render template
         html_content = template.render(**template_data)
         
-        # Create temporary files for HTML and PDF
+        # Create temporary file for HTML
         with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as html_tmp:
             html_path = html_tmp.name
             html_tmp.write(html_content.encode('utf-8'))
         
+        # Create PDF filename
         pdf_path = html_path.replace('.html', '.pdf')
         
-        # Generate PDF using WeasyPrint command-line interface
-        css_path = os.path.join(static_dir, 'css', 'style.css')
+        # Configure PDF options
+        pdf_options = {
+            'page-size': 'A4',
+            'margin-top': '20mm',
+            'margin-right': '20mm',
+            'margin-bottom': '20mm',
+            'margin-left': '20mm',
+            'encoding': 'UTF-8',
+            'no-outline': None
+        }
         
-        # Use a simplified approach with just the essential parameters
-        html = HTML(filename=html_path)
-        html.write_pdf(pdf_path)
+        # Configure pdfkit with proper wkhtmltopdf path
+        config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_PATH)
+        
+        # Generate PDF
+        pdfkit.from_file(html_path, pdf_path, options=pdf_options, configuration=config)
         
         # Clean up the temporary HTML file
         if os.path.exists(html_path):
             os.unlink(html_path)
+        
+        logger.info(f"PDF generated successfully at {pdf_path}")
         
         return True, pdf_path
     
