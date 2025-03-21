@@ -6,17 +6,22 @@ Telegram Bot Handler for Values Report Bot
 """
 
 import logging
+import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ContextTypes, ConversationHandler
+from telegram.ext import ConversationHandler
 from modules.database import verify_access_code, store_user_data, store_report
 from modules.llm_integration import generate_all_sections, get_value_info
-from modules.pdf_generator import generate_pdf, cleanup_pdf
+from modules.report_generator import generate_report, cleanup_report
 from modules.utils import (
     parse_values, validate_age, validate_country, 
     validate_occupation, format_values_for_display
 )
 
 logger = logging.getLogger(__name__)
+
+# Create an event loop for async operations
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 
 # Define conversation states
 (
@@ -26,7 +31,7 @@ logger = logging.getLogger(__name__)
     REVIEW, GENERATING_REPORT
 ) = range(8)
 
-def start(update: Update, context) -> int:
+def start(update, context):
     """Start the conversation and ask for access code"""
     # Initialize user data storage in context
     context.user_data.clear()
@@ -34,14 +39,14 @@ def start(update: Update, context) -> int:
     context.user_data['telegram_username'] = update.effective_user.username
     
     update.message.reply_text(
-        "Welcome to your Personal Values Report Generator! 🌟\n\n"
-        "Thanks for taking part in the Knowing My Values exercise. We've set up a bot to help you generate a personalised report based on your top 10 values.\n\n"
-        "Please enter your access code to begin. If you don't have one, please contact the administrator."
+        "Welcome to the Personal Values Report Bot! 🌟\n\n"
+        "I'll help you create a personalized values report based on your inputs.\n\n"
+        "Please enter your access code to begin:"
     )
     
     return ACCESS_CODE
 
-def handle_access_code(update: Update, context) -> int:
+def handle_access_code(update, context):
     """Verify the access code provided by the user"""
     access_code = update.message.text.strip()
     
@@ -66,7 +71,7 @@ def handle_access_code(update: Update, context) -> int:
     
     return TOP_FIVE_VALUES
 
-def collect_top_five_values(update: Update, context) -> int:
+def collect_top_five_values(update, context):
     """Collect the top 5 ranked values from the user"""
     # Check if this is a callback query (edit request)
     if update.callback_query:
@@ -112,7 +117,7 @@ def collect_top_five_values(update: Update, context) -> int:
     
     return NEXT_FIVE_VALUES
 
-def collect_next_five_values(update: Update, context) -> int:
+def collect_next_five_values(update, context):
     """Collect the next 5 values (not ranked) from the user"""
     # Check if this is a callback query (edit request)
     if update.callback_query:
@@ -146,7 +151,7 @@ def collect_next_five_values(update: Update, context) -> int:
     
     return AGE
 
-def collect_age(update: Update, context) -> int:
+def collect_age(update, context):
     """Collect age information from the user"""
     # Check if this is a callback query (edit request)
     if update.callback_query:
@@ -174,7 +179,7 @@ def collect_age(update: Update, context) -> int:
     
     return COUNTRY
 
-def collect_country(update: Update, context) -> int:
+def collect_country(update, context):
     """Collect country information from the user"""
     # Check if this is a callback query (edit request)
     if update.callback_query:
@@ -202,7 +207,7 @@ def collect_country(update: Update, context) -> int:
     
     return OCCUPATION
 
-def collect_occupation(update: Update, context) -> int:
+def collect_occupation(update, context):
     """Collect occupation information from the user"""
     # Check if this is a callback query (edit request)
     if update.callback_query:
@@ -228,7 +233,7 @@ def collect_occupation(update: Update, context) -> int:
     
     return REVIEW
 
-def review_inputs(update: Update, context) -> int:
+def review_inputs(update, context):
     """Show a summary of collected data and ask for confirmation"""
     top_values = context.user_data.get('top_values', [])
     next_values = context.user_data.get('next_values', [])
@@ -281,7 +286,7 @@ def review_inputs(update: Update, context) -> int:
     
     return REVIEW
 
-def confirm_inputs(update: Update, context) -> int:
+def confirm_inputs(update, context):
     """Handle confirmation to generate the report"""
     query = update.callback_query
     query.answer()
@@ -289,8 +294,8 @@ def confirm_inputs(update: Update, context) -> int:
     # Inform user that report generation is starting
     query.edit_message_text(
         "📊 Thank you for confirming your information!\n\n"
-        "I'm now generating your personalised values report. This may take a minute or two...\n\n"
-        "Please wait while I process your data and create your PDF report."
+        "I'm now generating your personalized values report. This may take a minute or two...\n\n"
+        "Please wait while I process your data and create your HTML report."
     )
     
     # Store user data in database
@@ -304,12 +309,12 @@ def confirm_inputs(update: Update, context) -> int:
         return ConversationHandler.END
     
     # Generate report sections
-    generate_report(update, context)
+    generate_report_for_user(update, context)
     
     return GENERATING_REPORT
 
-def generate_report(update: Update, context) -> int:
-    """Generate the report using LLM and send PDF to user"""
+def generate_report_for_user(update, context):
+    """Generate the report using LLM and send HTML to user"""
     user_id = update.effective_user.id
     
     try:
@@ -317,9 +322,6 @@ def generate_report(update: Update, context) -> int:
         user_data = context.user_data
         
         # Generate content for all sections
-        import asyncio
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
         sections_content, prompts_used = loop.run_until_complete(generate_all_sections(user_data))
         
         # Store report data
@@ -330,56 +332,56 @@ def generate_report(update: Update, context) -> int:
         }
         store_report(user_id, report_data)
         
-        # Generate PDF
-        success, result = generate_pdf(user_data, sections_content)
+        # Generate HTML report
+        success, result = generate_report(user_data, sections_content)
         
         if not success:
             if update.callback_query:
                 update.callback_query.edit_message_text(
-                    f"⚠️ Error generating PDF: {result}"
+                    f"⚠️ Error generating report: {result}"
                 )
             else:
                 update.message.reply_text(
-                    f"⚠️ Error generating PDF: {result}"
+                    f"⚠️ Error generating report: {result}"
                 )
             return ConversationHandler.END
         
-        # Send PDF to user
-        pdf_path = result
+        # Send HTML to user
+        html_path = result
         
         # Message indicating report is ready
         if update.callback_query:
             update.callback_query.edit_message_text(
-                "✅ Your Values report is ready!\n\n"
+                "✅ Your personalized values report is ready!\n\n"
                 "Here's what's included in your report:\n"
                 "- What does this mean for me?\n"
                 "- Are my values in parallel or in tension?\n"
                 "- What do my values say about how I make decisions?\n"
                 "- What do my values say about how I build relationships?\n\n"
-                "I'm sending your PDF report now..."
+                "I'm sending your HTML report now..."
             )
         else:
             update.message.reply_text(
-                "✅ Your Values report is ready!\n\n"
+                "✅ Your personalized values report is ready!\n\n"
                 "Here's what's included in your report:\n"
                 "- What does this mean for me?\n"
                 "- Are my values in parallel or in tension?\n"
                 "- What do my values say about how I make decisions?\n"
                 "- What do my values say about how I build relationships?\n\n"
-                "I'm sending your PDF report now..."
+                "I'm sending your HTML report now..."
             )
         
-        # Send the PDF
-        with open(pdf_path, 'rb') as file:
+        # Send the HTML
+        with open(html_path, 'rb') as file:
             context.bot.send_document(
                 chat_id=user_id,
                 document=file,
-                filename=f"Values_Report_{user_id}.pdf",
-                caption="Here is your personalised Values report!"
+                filename=f"Values_Report_{user_id}.html",
+                caption="Here is your personalized values report in HTML format! You can open it in any browser and print to PDF if needed."
             )
         
-        # Cleanup the temporary PDF file
-        cleanup_pdf(pdf_path)
+        # Cleanup the temporary HTML file
+        cleanup_report(html_path)
         
         # Thank the user and end conversation
         context.bot.send_message(
@@ -402,7 +404,7 @@ def generate_report(update: Update, context) -> int:
             )
         return ConversationHandler.END
 
-def cancel(update: Update, context) -> int:
+def cancel(update, context):
     """Cancel and end the conversation"""
     update.message.reply_text(
         "❌ Report generation canceled. Your data has not been saved.\n\n"

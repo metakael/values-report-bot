@@ -2,15 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """
-PDF Generator module using pdfkit and Jinja2 templates
+Report Generator module using Jinja2 templates
 """
 
 import os
 import logging
-import platform
 from datetime import datetime
 import tempfile
-import pdfkit
 from jinja2 import Environment, FileSystemLoader
 from config import Config
 
@@ -20,24 +18,16 @@ logger = logging.getLogger(__name__)
 template_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates')
 env = Environment(loader=FileSystemLoader(template_dir))
 
-# Determine the path to wkhtmltopdf based on the environment
-if platform.system() == 'Darwin':  # macOS
-    WKHTMLTOPDF_PATH = '/usr/local/bin/wkhtmltopdf'
-elif platform.system() == 'Windows':  # Windows
-    WKHTMLTOPDF_PATH = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
-else:  # Linux (Render)
-    WKHTMLTOPDF_PATH = '/usr/bin/wkhtmltopdf'
-
-def generate_pdf(user_data, sections_content):
+def generate_report(user_data, sections_content):
     """
-    Generate a PDF report based on user data and section content
+    Generate an HTML report based on user data and section content
     
     Args:
         user_data (dict): User's values and personal information
         sections_content (dict): Content for each section of the report
         
     Returns:
-        tuple: (success, pdf_path or error_message)
+        tuple: (success, html_path or error_message)
     """
     try:
         # Prepare template data
@@ -73,48 +63,24 @@ def generate_pdf(user_data, sections_content):
             html_path = html_tmp.name
             html_tmp.write(html_content.encode('utf-8'))
         
-        # Create PDF filename
-        pdf_path = html_path.replace('.html', '.pdf')
+        logger.info(f"HTML report generated successfully at {html_path}")
         
-        # Configure PDF options
-        pdf_options = {
-            'page-size': 'A4',
-            'margin-top': '20mm',
-            'margin-right': '20mm',
-            'margin-bottom': '20mm',
-            'margin-left': '20mm',
-            'encoding': 'UTF-8',
-            'no-outline': None
-        }
-        
-        # Configure pdfkit with proper wkhtmltopdf path
-        config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_PATH)
-        
-        # Generate PDF
-        pdfkit.from_file(html_path, pdf_path, options=pdf_options, configuration=config)
-        
-        # Clean up the temporary HTML file
-        if os.path.exists(html_path):
-            os.unlink(html_path)
-        
-        logger.info(f"PDF generated successfully at {pdf_path}")
-        
-        return True, pdf_path
+        return True, html_path
     
     except Exception as e:
-        logger.error(f"Error generating PDF: {e}", exc_info=True)
-        return False, f"Error generating PDF: {str(e)}"
+        logger.error(f"Error generating HTML report: {e}", exc_info=True)
+        return False, f"Error generating report: {str(e)}"
 
-def cleanup_pdf(pdf_path):
+def cleanup_report(report_path):
     """
-    Remove the temporary PDF file after it has been sent
+    Remove the temporary report file after it has been sent
     
     Args:
-        pdf_path (str): Path to the PDF file
+        report_path (str): Path to the report file
     """
     try:
-        if os.path.exists(pdf_path):
-            os.unlink(pdf_path)
-            logger.info(f"Temporary PDF file removed: {pdf_path}")
+        if os.path.exists(report_path):
+            os.unlink(report_path)
+            logger.info(f"Temporary report file removed: {report_path}")
     except Exception as e:
-        logger.error(f"Error removing temporary PDF file: {e}")
+        logger.error(f"Error removing temporary report file: {e}")

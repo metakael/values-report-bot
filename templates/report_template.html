@@ -1,42 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Values Report</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
             padding: 20px;
-            color: #333333;
         }
-        
         h1 {
-            font-size: 24pt;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #3498db;
+        }
+        .report-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .user-info {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .values-list {
             margin-bottom: 20px;
         }
-        
-        h2 {
-            font-size: 18pt;
-            margin-top: 30px;
-            margin-bottom: 15px;
-        }
-        
-        .user-info {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
-        }
-        
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        .report-footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        @media print {
+            body { 
+                font-size: 12pt; 
+            }
+            h1 { 
+                font-size: 18pt; 
+            }
+            h2 { 
+                font-size: 16pt; 
+            }
+            h3 { 
+                font-size: 14pt; 
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Personal Values Report</h1>
-    <p>Generated on: {{ generation_date }}</p>
+    <div class="report-header">
+        <h1>Personal Values Report</h1>
+        <p>Generated on: {{ generation_date }}</p>
+    </div>
     
     <div class="user-info">
         <h3>Personal Information</h3>
@@ -45,19 +77,21 @@
         <p><strong>Occupation:</strong> {{ occupation }}</p>
         
         <h3>Your Top Values</h3>
-        <h4>Top 5 Values (Ranked)</h4>
-        <ol>
-            {% for value in top_values %}
-            <li>{{ value }}</li>
-            {% endfor %}
-        </ol>
-        
-        <h4>Values 6-10</h4>
-        <ul>
-            {% for value in next_values %}
-            <li>{{ value }}</li>
-            {% endfor %}
-        </ul>
+        <div class="values-list">
+            <h4>Top 5 Values (Ranked)</h4>
+            <ol>
+                {% for value in top_values %}
+                <li>{{ value }}</li>
+                {% endfor %}
+            </ol>
+            
+            <h4>Values 6-10</h4>
+            <ul>
+                {% for value in next_values %}
+                <li>{{ value }}</li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
     
     {% for section in sections %}
@@ -67,9 +101,11 @@
     </div>
     {% endfor %}
     
-    <div>
-        <h2>References</h2>
+    <div class="report-footer">
+        <h3>References</h3>
         <p>Schwartz, S. H. (1992). Universals in the content and structure of values: Theoretical advances and empirical tests in 20 countries. Advances in Experimental Social Psychology, 25, 1-65.</p>
+        <p>Schwartz, S. H. (2012). An Overview of the Schwartz Theory of Basic Values. Online Readings in Psychology and Culture, 2(1).</p>
+        <p>Gouveia, V. V., Milfont, T. L., & Guerra, V. M. (2014). Functional theory of human values: Testing its content and structure hypotheses. Personality and Individual Differences, 60, 41-47.</p>
     </div>
 </body>
 </html>
