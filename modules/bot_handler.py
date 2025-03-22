@@ -40,7 +40,8 @@ def start(update, context):
     
     update.message.reply_text(
         "Welcome to the Personal Values Report Bot! 🌟\n\n"
-        "I'll help you create a personalized values report based on your inputs.\n\n"
+        "Thanks for taking part in the Values exercise by Halogen.\n\n"
+        "I'll help you create a personalised values report based on your inputs.\n\n"
         "Please enter your access code to begin:"
     )
     
@@ -64,7 +65,7 @@ def handle_access_code(update, context):
     
     # Proceed to collect values
     update.message.reply_text(
-        f"✅ Access code verified! You can now proceed with creating your values report.\n\n"
+        f"✅ Access code verified! We can now proceed with creating your values report.\n\n"
         f"Let's start with your top 5 values in ranked order (1st to 5th).\n\n"
         f"Please enter your top 5 values, separated by commas, in order of importance:"
     )
@@ -294,8 +295,8 @@ def confirm_inputs(update, context):
     # Inform user that report generation is starting
     query.edit_message_text(
         "📊 Thank you for confirming your information!\n\n"
-        "I'm now generating your personalized values report. This may take a minute or two...\n\n"
-        "Please wait while I process your data and create your HTML report."
+        "I'm now generating your personalised values report. This may take a minute or two...\n\n"
+        "Please wait while I process your data and create your report."
     )
     
     # Store user data in database
@@ -352,13 +353,13 @@ def generate_report_for_user(update, context):
         # Message indicating report is ready
         if update.callback_query:
             update.callback_query.edit_message_text(
-                "✅ Your personalized values report is ready!\n\n"
+                "✅ Your personalised values report is ready!\n\n"
                 "Here's what's included in your report:\n"
                 "- What does this mean for me?\n"
                 "- Are my values in parallel or in tension?\n"
                 "- What do my values say about how I make decisions?\n"
                 "- What do my values say about how I build relationships?\n\n"
-                "I'm sending your HTML report now..."
+                "I'm sending your report now..."
             )
         else:
             update.message.reply_text(
@@ -368,7 +369,7 @@ def generate_report_for_user(update, context):
                 "- Are my values in parallel or in tension?\n"
                 "- What do my values say about how I make decisions?\n"
                 "- What do my values say about how I build relationships?\n\n"
-                "I'm sending your HTML report now..."
+                "I'm sending your report now..."
             )
         
         # Send the HTML
@@ -377,7 +378,7 @@ def generate_report_for_user(update, context):
                 chat_id=user_id,
                 document=file,
                 filename=f"Values_Report_{user_id}.html",
-                caption="Here is your personalized values report in HTML format! You can open it in any browser and print to PDF if needed."
+                caption="Here is your personalised values report in HTML format! You can open it in any browser and print to PDF if needed. Take note that Telegram may pop up a warning for all HTML links, but rest assured this is normal."
             )
         
         # Cleanup the temporary HTML file
@@ -386,7 +387,7 @@ def generate_report_for_user(update, context):
         # Thank the user and end conversation
         context.bot.send_message(
             chat_id=user_id,
-            text="Thank you for using the Personal Values Report Bot! 🌟\n\n"
+            text="Thank you for using the Personal Values Report Bot by Halogen! 🌟\n\n"
                 "If you'd like to create another report, just type /start to begin again."
         )
         
