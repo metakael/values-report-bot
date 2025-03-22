@@ -4,44 +4,199 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Values Report</title>
+    
+    <!-- Add Google Fonts - Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Original CSS styles */
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        /* ... other existing styles ... */
         
-        /* Enhanced styling for markdown-generated content */
-        .section h1, .section h2, .section h3, 
-        .section h4, .section h5, .section h6 {
-            margin-top: 1em;
-            margin-bottom: 0.5em;
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            color: #333333;
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        
+        /* Header and corporate branding */
+        .header {
+            padding: 25px 40px;
+            background-color: #2c3e50; /* Primary corporate color - dark blue */
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 5px solid #3498db; /* Secondary corporate color - lighter blue */
+        }
+        
+        .logo-container {
+            flex: 0 0 auto;
+        }
+        
+        .logo {
+            max-height: 60px;
+            max-width: 180px;
+        }
+        
+        .header-text {
+            flex: 1 1 auto;
+            text-align: right;
+        }
+        
+        .header-text h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header-text .date {
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+        
+        /* Content container */
+        .content {
+            padding: 40px;
+            background-color: #ffffff;
+        }
+        
+        /* Executive summary section */
+        .executive-summary {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .executive-summary h2 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        /* User information panel */
+        .user-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            background-color: #f8f9fa;
+            padding: 25px;
+            margin-bottom: 40px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .user-info-col {
+            flex: 1 1 calc(50% - 20px);
+            min-width: 250px;
+        }
+        
+        .info-group h3 {
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-weight: 600;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+        
+        .info-item {
+            margin-bottom: 10px;
+        }
+        
+        .info-item strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .values-list {
+            margin-bottom: 0;
+        }
+        
+        .values-list ol, .values-list ul {
+            margin-left: 20px;
+            margin-bottom: 0;
+        }
+        
+        .values-list li {
+            margin-bottom: 8px;
+        }
+        
+        /* Content sections */
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        /* Styling for markdown-generated content */
+        .section h3 {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .section h4 {
+            color: #2c3e50;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
         }
         
         .section p {
-            margin-bottom: 1em;
-            line-height: 1.6;
+            margin-bottom: 15px;
+            line-height: 1.7;
+            color: #333333;
+            text-align: justify;
+            font-weight: 400;
         }
         
         .section ul, .section ol {
-            margin-left: 1.5em;
-            margin-bottom: 1em;
+            margin-left: 25px;
+            margin-bottom: 20px;
         }
         
         .section li {
-            margin-bottom: 0.5em;
+            margin-bottom: 8px;
+            line-height: 1.6;
         }
         
         .section blockquote {
-            border-left: 3px solid #ccc;
-            margin-left: 1em;
-            padding-left: 1em;
-            color: #666;
+            border-left: 3px solid #3498db;
+            margin: 20px 0;
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            color: #555;
+            font-style: italic;
         }
         
         .section code {
@@ -49,6 +204,7 @@
             padding: 2px 4px;
             border-radius: 3px;
             font-family: monospace;
+            font-size: 90%;
         }
         
         .section pre {
@@ -61,31 +217,185 @@
         .section table {
             border-collapse: collapse;
             width: 100%;
-            margin-bottom: 1em;
+            margin: 20px 0;
         }
         
         .section th, .section td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 12px;
+            text-align: left;
         }
         
         .section th {
             background-color: #f2f2f2;
-            text-align: left;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .section tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        /* Footer styling */
+        .footer {
+            background-color: #f8f9fa;
+            padding: 30px 40px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-section {
+            flex: 1 1 300px;
+        }
+        
+        .footer-section h3 {
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .footer-section p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .references {
+            font-size: 13px;
+        }
+        
+        .references p {
+            margin-bottom: 8px;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 13px;
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                font-size: 12pt;
+                max-width: none;
+            }
+            
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .content, .footer {
+                padding: 20px;
+            }
+            
+            .section {
+                page-break-inside: avoid;
+            }
+            
+            .no-print-break {
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Your existing template content -->
-    
-    <!-- Updated section rendering with 'safe' filter -->
-    {% for section in sections %}
-    <div class="section">
-        <h2>{{ section.title }}</h2>
-        {{ section.content|safe }}
+    <!-- Header with logo and title -->
+    <div class="header">
+        <div class="logo-container">
+            <!-- Use the base64 encoded logo -->
+            <img src="{{ logo_base64 }}" alt="Company Logo" class="logo">
+        </div>
+        <div class="header-text">
+            <h1>Personal Values Assessment</h1>
+            <div class="date">{{ generation_date }}</div>
+        </div>
     </div>
-    {% endfor %}
     
-    <!-- Rest of your template -->
+    <div class="content">
+        <!-- Executive Summary -->
+        <div class="executive-summary">
+            <h2>Executive Summary</h2>
+            <p>This personalized report analyzes your core values based on Schwartz's Theory of Basic Human Values and Gouveia's Functional Theory. Understanding your values provides insights into your decision-making processes, relationship preferences, and personal motivations.</p>
+        </div>
+        
+        <!-- User Information Section -->
+        <div class="user-info">
+            <div class="user-info-col">
+                <div class="info-group">
+                    <h3>Personal Information</h3>
+                    <div class="info-item"><strong>Age:</strong> {{ age }}</div>
+                    <div class="info-item"><strong>Country:</strong> {{ country }}</div>
+                    <div class="info-item"><strong>Occupation:</strong> {{ occupation }}</div>
+                </div>
+            </div>
+            
+            <div class="user-info-col">
+                <div class="info-group">
+                    <h3>Your Top Values</h3>
+                    <div class="values-list">
+                        <h4>Top 5 Values (Ranked)</h4>
+                        <ol>
+                            {% for value in top_values %}
+                            <li>{{ value }}</li>
+                            {% endfor %}
+                        </ol>
+                        
+                        <h4>Values 6-10</h4>
+                        <ul>
+                            {% for value in next_values %}
+                            <li>{{ value }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Sections -->
+        {% for section in sections %}
+        <div class="section">
+            <h2>{{ section.title }}</h2>
+            {{ section.content|safe }}
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Footer with references and contact info -->
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About This Report</h3>
+                <p>This report was generated using advanced analysis of your personal values based on established psychological frameworks. The insights provided are based on peer-reviewed academic research and are intended for personal development purposes.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Information</h3>
+                <p>Email: contact@yourcompany.com</p>
+                <p>Website: www.yourcompany.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+            </div>
+        </div>
+        
+        <div class="references">
+            <h3>Academic Sources</h3>
+            <p>Schwartz, S. H. (1992). Universals in the content and structure of values: Theoretical advances and empirical tests in 20 countries. In M. P. Zanna (Ed.), Advances in Experimental Social Psychology, 25, 1-65.</p>
+            <p>Schwartz, S. H. (2012). An Overview of the Schwartz Theory of Basic Values. Online Readings in Psychology and Culture, 2(1).</p>
+            <p>Gouveia, V. V., Milfont, T. L., & Guerra, V. M. (2014). Functional theory of human values: Testing its content and structure hypotheses. Personality and Individual Differences, 60, 41-47.</p>
+        </div>
+        
+        <div class="copyright">
+            <p>© {{ generation_date.split()[2] }} Your Company Name. All rights reserved.</p>
+        </div>
+    </div>
 </body>
 </html>

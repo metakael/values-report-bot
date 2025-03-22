@@ -7,6 +7,7 @@ Report Generator module using Jinja2 templates with markdown support
 
 import os
 import logging
+import base64
 from datetime import datetime
 import tempfile
 from jinja2 import Environment, FileSystemLoader
@@ -18,6 +19,25 @@ logger = logging.getLogger(__name__)
 # Initialize Jinja2 environment
 template_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates')
 env = Environment(loader=FileSystemLoader(template_dir))
+
+def get_base64_logo():
+    """
+    Convert logo to base64 for embedding in HTML
+    
+    Returns:
+        str: base64 encoded image string with data URI prefix
+    """
+    # Path to your logo file in your project
+    logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'images', 'logo.png')
+    
+    try:
+        with open(logo_path, 'rb') as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+            return f"data:image/png;base64,{encoded_string}"
+    except Exception as e:
+        logger.error(f"Error encoding logo: {e}")
+        # Return empty string or a placeholder if logo can't be found
+        return ""
 
 def generate_report(user_data, sections_content):
     """
@@ -40,7 +60,8 @@ def generate_report(user_data, sections_content):
             'age': user_data.get('age', 'Not specified'),
             'country': user_data.get('country', 'Not specified'),
             'occupation': user_data.get('occupation', 'Not specified'),
-            'sections': []
+            'sections': [],
+            'logo_base64': get_base64_logo()  # Add the base64 encoded logo
         }
         
         # Format sections with markdown conversion
