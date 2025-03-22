@@ -143,6 +143,7 @@ def store_user_data(user_id, user_data):
                 storage_data = {
                     'telegram_id': user_id,
                     'telegram_username': user_data.get('telegram_username'),
+                    'access_code': user_data.get('access_code'),
                     'top_values': user_data.get('top_values', []),
                     'next_values': user_data.get('next_values', []),
                     'age': user_data.get('age'),
