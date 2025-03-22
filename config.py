@@ -121,9 +121,15 @@ These values have the following descriptors:
 - {value9}: {desc9}
 - {value10}: {desc10}
 
-Noting the ranked order of my top 5 values and the subsequent 5 values which also hold importance to me, and also all the information you have about me, I want you to prepare an encouraging and uplifting analysis of who I am as can be observed from my values and presented to me as if you are writing a personalised personality diagnostic report.
+Prepare an encouraging and uplifting analysis of who I am as can be observed from my values and their descriptors. Of key importance is the distinction of my top 5 values in its ranked order from the subsequent 5 values which also hold importance to me.
+Contextualise this analysis by considering the demographic information you have about me.
 
-Your response should be formal yet uplifting. This is considered a personality diagnostic report and should only contain body text of no more than 300 words. Hold your response to a high degree of relevance. Noting all of the information you are given about me and my values, this response should be to directly answer the question: What does this mean for me?
+Your response should adhere to the following rules:
+- Be formal yet uplifting. Present this to me as a personalised personality diagnostic report without calling it such explicitly.
+- Use British English spelling and grammar.
+- There should only be body text of no more than 300 words, with no headers whatsoever. Bold, italic, and bullet formatting is allowed.
+- Maintain a high degree of relevance, noting all of the information you are given about me and my values but making no direct reference to my demographic information in the report.
+- Aim to directly answer the question: What does this mean for me?
 """
         },
         {
@@ -146,11 +152,22 @@ I have determined that they correspond very closely to the following Basic Human
 - {value9}: {schwartz_cat9}
 - {value10}: {schwartz_cat10}
 
-I am currently aged {age} and based in {country}, with my occupation being {occupation}. Noting the ranked order of my top 5 values and the subsequent 5 values which also hold importance to me, I want you to prepare a detailed analysis and explain the following to me structured as if you are writing a personalised personality diagnostic report.
-(a) Considering the placement of these values on the Schwartz Values Wheel, do I have values in conflict or in alignment? Will I experience internal harmony or internal dissonance?
+Prepare a detailed, encouraging, and uplifting analysis of who I am as can be observed from my values and their respective Schwartz Basic Human Values. Of key importance is the distinction of my top 5 values in its ranked order from the subsequent 5 values which also hold importance to me.
+Contextualise this analysis by considering the following demographic information about me:
+- I am currently aged {age}
+- I am based in {country}
+- My occupation is {occupation}
+You analysis must answer the following questions:
+(a) Considering the placement of these Basic Human Values on the Schwartz Values Wheel, do I have values in conflict or in alignment? Will I experience internal harmony or internal dissonance?
 (b) Considering the four higher-order dimensions in Schwartz's work, what does this tell me about my personal inclinations to being open to change or being conservative? What does this tell me about my personal inclinations to transcending oneself or enhancing oneself?
 
-Your response should be formal yet uplifting. This is considered a personality diagnostic report and should only contain body text of no more than 500 words. Hold your response to a high degree of source accuracy with no creativity or hallucination involved in the factual reporting of my values. Noting all of the information you are given about me and my values, this response should be to directly answer the question: Are my values in parallel or in tension?
+Your response should adhere to the following rules:
+- Be formal yet uplifting. Present this to me as a personalised personality diagnostic report without calling it such explicitly.
+- Use British English spelling and grammar.
+- There should only be body text of no more than 500 words, with no headers whatsoever. Bold, italic, and bullet formatting is allowed.
+- Maintain a high degree of source accuracy, making no creative or hallucinatory interpretations of the information you are given about me and my values.
+- Note all of the information you are given about me and my values but making no direct reference to my demographic information in the report.
+- Aim to directly answer the question: Are my values in parallel or in tension?
 """
         },
         {
@@ -173,11 +190,22 @@ I have determined that they correspond very closely to the following Basic Value
 - {value9}: {gouveia_cat9}
 - {value10}: {gouveia_cat10}
 
-I am currently aged {age} and based in {country}, with my occupation being {occupation}. Noting the ranked order of my top 5 values and the subsequent 5 values which also hold importance to me, I want you to prepare a detailed analysis and explain the following to me structured as if you are writing a personalised personality diagnostic report.
-(a) Considering these values in the context of values directing my behaviour toward specific goals, what does this tell me about my decision making and motivations?
-(b) Considering these values in the context of values reflecting my needs spectrum between materialism and idealism, what does this tell me about my decision making and motivations?
+Prepare a detailed, encouraging, and uplifting analysis of who I am as can be observed from my values and their respective Gouveia Basic Values. Of key importance is the distinction of my top 5 values in its ranked order from the subsequent 5 values which also hold importance to me.
+Contextualise this analysis by considering the following demographic information about me:
+- I am currently aged {age}
+- I am based in {country}
+- My occupation is {occupation}
+You analysis must answer the following questions:
+(a) Considering my Basic Values in the context of how values direct one's behaviour toward specific goals, what does this tell me about my decision making and motivations?
+(b) Considering my Basic Values in the context of how values reflect one's needs on a spectrum between materialism and idealism, what does this tell me about my decision making and motivations?
 
-Your response should be formal yet uplifting. This is considered a personality diagnostic report and should only contain body text of no more than 500 words. Hold your response to a high degree of source accuracy with no creativity or hallucination involved in the factual reporting of my values. Noting all of the information you are given about me and my values, this response should be to directly answer the question: What do my values say about how I make decisions?
+Your response should adhere to the following rules:
+- Be formal yet uplifting. Present this to me as a personalised personality diagnostic report without calling it such explicitly.
+- Use British English spelling and grammar.
+- There should only be body text of no more than 500 words, with no headers whatsoever. Bold, italic, and bullet formatting is allowed.
+- Maintain a high degree of source accuracy, making no creative or hallucinatory interpretations of the information you are given about me and my values.
+- Note all of the information you are given about me and my values but making no direct reference to my demographic information in the report.
+- Aim to directly answer the question: What do my values say about how I make decisions?
 """
         },
         {
@@ -224,12 +252,22 @@ I have determined that they correspond very closely to the following Basic Value
 - {value9}: {gouveia_cat9}
 - {value10}: {gouveia_cat10}
 
-I am currently aged {age} and based in {country}, with my occupation being {occupation}. Noting the ranked order of my top 5 values and the subsequent 5 values which also hold importance to me, I want you to prepare a detailed analysis and explain the following to me structured as if you are writing a personalised personality diagnostic report.
-(a) Considering where my values are at on the Schwartz Values Wheel and on the Gouveia Two-by-Three Framework of Core Functions, how might I communicate?
-(b) Considering where my values are at on the Schwartz Values Wheel and on the Gouveia Two-by-Three Framework of Core Functions, what might I seek in relationships in general?
-(c) Considering where my values are at on the Schwartz Values Wheel and on the Gouveia Two-by-Three Framework of Core Functions, what relationship dynamics would be more fulfilling for me and what relationship dynamics would be more challenging for me?
+Prepare a detailed, encouraging, and uplifting analysis of who I am as can be observed from my values and their respective Schwartz Basic Human Values and respective Gouveia Basic Values. Of key importance is the distinction of my top 5 values in its ranked order from the subsequent 5 values which also hold importance to me.
+Contextualise this analysis by considering the following demographic information about me:
+- I am currently aged {age}
+- I am based in {country}
+- My occupation is {occupation}
+You analysis must answer the following questions:
+(a) Considering where my values are at when mapped onto the Schwartz Values Wheel, and when mapped onto the Gouveia Two-by-Three Framework of Core Functions, how would you describe my communication style?
+(b) Considering where my values are at when mapped onto the Schwartz Values Wheel, and when mapped onto the Gouveia Two-by-Three Framework of Core Functions, what relationship dynamics would be more fulfilling for me and what relationship dynamics would be more challenging for me?
 
-Your response should be formal yet uplifting. This is considered a personality diagnostic report and should only contain body text of no more than 500 words. Hold your response to a high degree of source accuracy with no creativity or hallucination involved in the factual reporting of my values. Noting all of the information you are given about me and my values, this response should be to directly answer the question: What do my values say about how I build relationships?
+Your response should adhere to the following rules:
+- Be formal yet uplifting. Present this to me as a personalised personality diagnostic report without calling it such explicitly.
+- Use British English spelling and grammar.
+- There should only be body text of no more than 500 words, with no headers whatsoever. Bold, italic, and bullet formatting is allowed.
+- Maintain a high degree of source accuracy, making no creative or hallucinatory interpretations of the information you are given about me and my values.
+- Note all of the information you are given about me and my values but making no direct reference to my demographic information in the report.
+- Aim to directly answer the question: What do my values say about how I build relationships?
 """
         }
     ]

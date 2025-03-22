@@ -29,12 +29,12 @@
         /* Header and corporate branding */
         .header {
             padding: 25px 40px;
-            background-color: #2c3e50; /* Primary corporate color - dark blue */
-            color: #ffffff;
+            background-color: #ffd500; /* Primary corporate color - Halogen Yellow */
+            color: #000000;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 5px solid #3498db; /* Secondary corporate color - lighter blue */
+            border-bottom: 5px solid #f18700; /* Secondary corporate color - Nuclear Orange */
         }
         
         .logo-container {
@@ -72,14 +72,14 @@
         
         /* Executive summary section */
         .executive-summary {
-            background-color: #f8f9fa;
-            border-left: 4px solid #3498db;
+            background-color: #f4f4f4; /* Light Gray background */
+            border-left: 4px solid #3ea3dc; /* Atomic Blue */
             padding: 25px;
             margin-bottom: 40px;
         }
         
         .executive-summary h2 {
-            color: #2c3e50;
+            color: #ffd500;
             font-size: 20px;
             margin-bottom: 15px;
             font-weight: 600;
@@ -90,7 +90,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            background-color: #f8f9fa;
+            background-color: #f4f4f4;
             padding: 25px;
             margin-bottom: 40px;
             border-radius: 4px;
@@ -104,7 +104,7 @@
         
         .info-group h3 {
             font-size: 16px;
-            color: #2c3e50;
+            color: #000000;
             margin-bottom: 12px;
             font-weight: 600;
             border-bottom: 1px solid #e0e0e0;
@@ -116,7 +116,7 @@
         }
         
         .info-item strong {
-            color: #2c3e50;
+            color: #000000;
             font-weight: 600;
         }
         
@@ -147,7 +147,7 @@
         }
         
         .section h2 {
-            color: #2c3e50;
+            color: #ffd500;
             font-size: 22px;
             margin-bottom: 20px;
             font-weight: 600;
@@ -155,9 +155,42 @@
             border-bottom: 2px solid #3498db;
         }
         
+        /* Reference image styling */
+        .reference-image-container {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        
+        .reference-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .image-caption {
+            font-size: 14px;
+            color: #757575;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        @media (min-width: 768px) {
+            .reference-image-container {
+                float: right;
+                margin: 0 0 20px 20px;
+                max-width: 40%;
+            }
+        }
+        
         /* Styling for markdown-generated content */
         .section h3 {
-            color: #2c3e50;
+            color: #000000;
             font-size: 18px;
             margin-top: 25px;
             margin-bottom: 15px;
@@ -165,7 +198,7 @@
         }
         
         .section h4 {
-            color: #2c3e50;
+            color: #000000;
             font-size: 16px;
             margin-top: 20px;
             margin-bottom: 10px;
@@ -175,7 +208,7 @@
         .section p {
             margin-bottom: 15px;
             line-height: 1.7;
-            color: #333333;
+            color: #000000;
             text-align: justify;
             font-weight: 400;
         }
@@ -238,11 +271,11 @@
         
         /* Footer styling */
         .footer {
-            background-color: #f8f9fa;
+            background-color: #f4f4f4;
             padding: 30px 40px;
             border-top: 1px solid #e0e0e0;
             font-size: 14px;
-            color: #666;
+            color: #757575;
         }
         
         .footer-content {
@@ -256,7 +289,7 @@
         }
         
         .footer-section h3 {
-            color: #2c3e50;
+            color: #ffd500;
             font-size: 16px;
             margin-bottom: 15px;
             font-weight: 600;
@@ -325,7 +358,7 @@
         <!-- Executive Summary -->
         <div class="executive-summary">
             <h2>Executive Summary</h2>
-            <p>This personalized report analyzes your core values based on Schwartz's Theory of Basic Human Values and Gouveia's Functional Theory. Understanding your values provides insights into your decision-making processes, relationship preferences, and personal motivations.</p>
+            <p>This personalised report analyses your core values mapped onto Shalom H. Schwartz's Theory of Basic Human Values and Valdiney V. Gouveia's Functional Theory of Human Values. Understanding your values provides insights into your decision-making processes, relationship preferences, and personal motivations, and we hope the following report gives some practical insights that you can take away from the exercise done with us.</p>
         </div>
         
         <!-- User Information Section -->
@@ -365,6 +398,12 @@
         {% for section in sections %}
         <div class="section">
             <h2>{{ section.title }}</h2>
+            {% if loop.index == 2 %}
+            <div class="reference-image-container">
+                <img src="{{ reference_image }}" alt="Schwartz Values Circle" class="reference-image">
+                <p class="image-caption">Figure 1: Schwartz's Circular Model of Values showing relationships between Basic Human Values.</p>
+            </div>
+            {% endif %}
             {{ section.content|safe }}
         </div>
         {% endfor %}
@@ -380,9 +419,9 @@
             
             <div class="footer-section">
                 <h3>Contact Information</h3>
-                <p>Email: contact@yourcompany.com</p>
-                <p>Website: www.yourcompany.com</p>
-                <p>Phone: +1 (555) 123-4567</p>
+                <p>Email: enquiry@halogen.sg</p>
+                <p>Website: https://halogen.sg</p>
+                <p>Phone: +65 6509 6700</p>
             </div>
         </div>
         
@@ -394,7 +433,7 @@
         </div>
         
         <div class="copyright">
-            <p>© {{ generation_date.split()[2] }} Your Company Name. All rights reserved.</p>
+            <p>© {{ generation_date.split()[2] }} Halogen Foundation. All rights reserved.</p>
         </div>
     </div>
 </body>

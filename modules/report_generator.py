@@ -38,6 +38,24 @@ def get_base64_logo():
         logger.error(f"Error encoding logo: {e}")
         # Return empty string or a placeholder if logo can't be found
         return ""
+    
+def get_base64_reference_image():
+    """
+    Convert reference image to base64 for embedding in HTML
+    
+    Returns:
+        str: base64 encoded image string with data URI prefix
+    """
+    # Path to your reference image file in your project
+    image_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'images', 'reference.png')
+    
+    try:
+        with open(image_path, 'rb') as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+            return f"data:image/png;base64,{encoded_string}"
+    except Exception as e:
+        logger.error(f"Error encoding reference image: {e}")
+        return ""
 
 def generate_report(user_data, sections_content):
     """
@@ -51,17 +69,29 @@ def generate_report(user_data, sections_content):
         tuple: (success, html_path or error_message)
     """
     try:
+        # Capitalize country name
+        country = user_data.get('country', 'Not specified')
+        capitalized_country = ' '.join(word.capitalize() for word in country.split())
+        
+        # Capitalize values
+        top_values = user_data.get('top_values', [])[:5]
+        capitalized_top_values = [' '.join(word.capitalize() for word in value.split()) for value in top_values]
+        
+        next_values = user_data.get('next_values', [])[:5]
+        capitalized_next_values = [' '.join(word.capitalize() for word in value.split()) for value in next_values]
+        
         # Prepare template data
         template_data = {
             'user_name': user_data.get('telegram_username', 'User'),
             'generation_date': datetime.now().strftime('%B %d, %Y'),
-            'top_values': user_data.get('top_values', [])[:5],
-            'next_values': user_data.get('next_values', [])[:5],
+            'top_values': capitalized_top_values,
+            'next_values': capitalized_next_values,
             'age': user_data.get('age', 'Not specified'),
-            'country': user_data.get('country', 'Not specified'),
+            'country': capitalized_country,
             'occupation': user_data.get('occupation', 'Not specified'),
             'sections': [],
-            'logo_base64': get_base64_logo()  # Add the base64 encoded logo
+            'logo_base64': get_base64_logo(),
+            'reference_image': get_base64_reference_image()
         }
         
         # Format sections with markdown conversion
